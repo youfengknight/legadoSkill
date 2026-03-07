@@ -362,7 +362,7 @@ class DebugEngine:
                 result.message = "搜索测试失败：未配置ruleSearch或bookList"
                 return result
             
-            analyzer = AnalyzeRule(html, url, self.book_source.jsLib)
+            analyzer = AnalyzeRule(html, url, self.book_source.jsLib, log_callback=self.log)
             book_elements = analyzer.get_elements(rule.bookList)
             
             self.log("搜索", f"找到 {len(book_elements)} 个搜索结果")

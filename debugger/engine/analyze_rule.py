@@ -62,12 +62,13 @@ class AnalyzeRule:
     PUT_PATTERN = re.compile(r'@put:\{([^}]+)\}', re.IGNORECASE)
     GET_PATTERN = re.compile(r'@get:\{([^}]+)\}', re.IGNORECASE)
     
-    def __init__(self, content: Any = None, base_url: str = None, js_lib: str = None):
+    def __init__(self, content: Any = None, base_url: str = None, js_lib: str = None, log_callback=None):
         self.content = content
         self.base_url = base_url or ""
         self.js_lib = js_lib  # 书源JS库（直接使用书源中的真实代码）
         self.is_json = False
         self.is_regex = False
+        self.log_callback = log_callback  # 日志回调函数
         self.variables: Dict[str, str] = {}
         
         self._soup: Optional[BeautifulSoup] = None
@@ -335,15 +336,27 @@ class AnalyzeRule:
         try:
             from debugger.js_engine import execute_js
             
-            # 准备上下文
+            # 准备上下文 - 关键修复：必须传递baseUrl
             context = {
                 'result': str(content) if not isinstance(content, str) else content,
                 'body': str(content) if not isinstance(content, str) else content,
                 'src': str(content) if not isinstance(content, str) else content,
+                'baseUrl': self.base_url or '',
             }
+            
+            # 调试日志
+            if self.log_callback:
+                self.log_callback("JS规则", f"执行JS规则, baseUrl={self.base_url}")
+                self.log_callback("JS规则", f"JS代码长度: {len(rule)}")
             
             # 执行JS - 传递书源的真实jsLib
             js_result = execute_js(rule, context, self.js_lib)
+            
+            # 调试日志
+            if self.log_callback:
+                self.log_callback("JS规则", f"JS执行结果: success={js_result.success}, result={str(js_result.result)[:200] if js_result.result else 'None'}")
+                if js_result.error:
+                    self.log_callback("JS规则", f"JS执行错误: {js_result.error}")
             
             if js_result.success:
                 # 更新result变量
@@ -355,6 +368,8 @@ class AnalyzeRule:
             
             return content
         except Exception as e:
+            if self.log_callback:
+                self.log_callback("JS规则", f"JS规则执行异常: {e}")
             return content
     
     def _apply_json_rule(self, rule: str, content: Any, 
@@ -1100,11 +1115,9 @@ class AnalyzeRule:
         try:
             from debugger.js_engine import execute_js
             
-            # 准备上下文 - 转义字符串中的特殊字符
             result_str = str(result) if not isinstance(result, str) else result
             escaped_result = result_str.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r')
             
-            # 转义baseUrl中的特殊字符
             escaped_base_url = self.base_url.replace('\\', '\\\\').replace('"', '\\"') if self.base_url else ""
             
             context = {
@@ -1114,21 +1127,57 @@ class AnalyzeRule:
                 'baseUrl': self.base_url,
             }
             
-            # 包装JS表达式为完整的代码
-            # 关键修复：注入baseUrl变量
-            wrapped_js = f'''
+            # 判断是表达式还是语句块
+            js_code_trimmed = js_code.strip()
+            
+            # 如果是语句块（包含换行、if/for/while、或以分号结尾的多语句）
+            is_statement_block = (
+                '\n' in js_code_trimmed or
+                js_code_trimmed.startswith('if ') or
+                js_code_trimmed.startswith('if(') or
+                js_code_trimmed.startswith('for ') or
+                js_code_trimmed.startswith('for(') or
+                js_code_trimmed.startswith('while ') or
+                js_code_trimmed.startswith('while(') or
+                js_code_trimmed.startswith('try ') or
+                js_code_trimmed.startswith('try{') or
+                js_code_trimmed.startswith('function ') or
+                js_code_trimmed.startswith('function(') or
+                js_code_trimmed.startswith('{') or
+                js_code_trimmed.startswith('var ') or
+                js_code_trimmed.startswith('let ') or
+                js_code_trimmed.startswith('const ')
+            )
+            
+            if is_statement_block:
+                # 语句块：直接执行，result 变量已在上下文中
+                wrapped_js = f'''
 result = "{escaped_result}";
 src = result;
+body = result;
 baseUrl = "{escaped_base_url}";
 
 // 执行用户JS代码
-result = {js_code};
+{js_code_trimmed}
+
+// 清空body，防止JS引擎用body覆盖result
+body = null;
+'''
+            else:
+                # 表达式：包装为 result = expression
+                wrapped_js = f'''
+result = "{escaped_result}";
+src = result;
+body = result;
+baseUrl = "{escaped_base_url}";
+
+// 执行用户JS表达式
+result = {js_code_trimmed};
 
 // 清空body，防止JS引擎用body覆盖result
 body = null;
 '''
             
-            # 执行JS
             js_result = execute_js(wrapped_js, context, self.js_lib)
             
             if js_result.success:
