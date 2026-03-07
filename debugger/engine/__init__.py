@@ -16,6 +16,7 @@ from .book_source import (
 )
 from .debug_engine import DebugEngine, DebugResult, SearchResult, BookInfo, Chapter, Content
 from .web_book import WebBook
+from .auto_fixer import AutoFixer, ErrorType, ErrorAnalysis, FixResult, run_auto_fix
 
 __all__ = [
     "AnalyzeRule",
@@ -39,4 +40,9 @@ __all__ = [
     "Chapter",
     "Content",
     "WebBook",
+    "AutoFixer",
+    "ErrorType",
+    "ErrorAnalysis",
+    "FixResult",
+    "run_auto_fix",
 ]
