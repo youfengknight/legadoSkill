@@ -5,6 +5,7 @@
     "bookSourceType": 0,
     "searchUrl": "/user/search.html?q={{key}}",
     "exploreUrl": "玄幻::/json?sortid=1&page={{page}}\n武侠::/json?sortid=2&page={{page}}\n都市::/json?sortid=3&page={{page}}\n历史::/json?sortid=4&page={{page}}\n网游::/json?sortid=5&page={{page}}\n科幻::/json?sortid=6&page={{page}}\n女生::/json?sortid=7&page={{page}}",
+    "loginCheckJs": "(function(a){var r=a.url(),o=a.body(),t=a.code();if(o&&200===t&&(o.includes('加载中')||o.includes('userverify'))){var c=source.get('verify_count')||'0';c=parseInt(c)+1;source.put('verify_count',c);if(c<=3){try{var h=java.webView(r,r,'setTimeout(function(){window.legado.getHTML(document.documentElement.outerHTML);},3000);');if(h&&!h.includes('加载中')&&!h.includes('userverify')){source.put('verify_count','0');return java.connect(r)}}catch(e){}}java.toast('需要验证');java.startBrowserAwait(r,'验证');source.put('verify_count','0');return java.connect(r)}return a})(result)",
     "ruleSearch": {
       "bookList": "$.[*]",
       "name": "$.articlename",
@@ -36,8 +37,7 @@
       "chapterUrl": "href"
     },
     "ruleContent": {
-      "content": "#chaptercontent@html",
-      "nextContentUrl": "text.下一页@href"
+      "content": "#chaptercontent@html"
     }
   }
 ]

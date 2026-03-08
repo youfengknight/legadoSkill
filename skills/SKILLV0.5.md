@@ -4828,7 +4828,7 @@ JS代码找API。
 步骤5: 成功！
 ```
 
-##### 9. 验证机制检测与处理（loginCheckJs通用方案）
+##### 9. Cloudflare验证检测与处理（新增功能）
 
 **用户需求**：为书源编写SKILL添加Cloudflare验证检测与处理功能
 
@@ -4841,53 +4841,42 @@ JS代码找API。
 
 **转化为口诀**：
 ```
-loginCheckJs是通用，
-验证检测看特征。
-状态码、关键词，
-根据网站来调整。
+Cloudflare验证看状态，
+403、503要警惕。
+页面包含Just a moment，
+loginCheckJs来处理。
 自动重试三次数，
 失败弹出浏览器。
-修改条件适配好，
-各种验证都能搞！
+验证通过继续读，
+书源功能更完善。
 ```
 
-**常见验证类型与检测条件**：
-
-| 验证类型 | 状态码 | 关键词检测 |
-|---------|--------|-----------|
-| Cloudflare | 403/502/503 | `o.includes('Just a moment')` |
-| 自定义加载页 | 200 | `o.includes('加载中')` |
-| 验证跳转 | 200 | `o.includes('userverify')` |
-| 需要登录 | 200 | `o.includes('请登录')` |
-| 空内容异常 | 200 | `o.length < 100` |
-
-**通用代码模板**（修改检测条件即可适配不同验证）：
-```javascript
-"loginCheckJs": "(function(a){var r=a.url(),o=a.body(),t=a.code();if(o&&【检测条件】){var c=source.get('v_count')||'0';c=parseInt(c)+1;source.put('v_count',c);if(c<=3){try{var h=java.webView(r,r,'setTimeout(function(){window.legado.getHTML(document.documentElement.outerHTML);},3000);');if(h&&!【验证关键词】){source.put('v_count','0');return java.connect(r)}}catch(e){}}java.toast('需要验证');java.startBrowserAwait(r,'验证');source.put('v_count','0');return java.connect(r)}return a})(result)"
+**完整示例**：
+```json
+{
+  "bookSourceName": "示例书源",
+  "bookSourceUrl": "https://www.example.com",
+  "loginCheckJs": "(function(a){var r=a.url(),o=a.body(),t=a.code();if(o&&(403===t||503===t||502===t||200===t&&(o.includes('Just a moment')||o.includes('Checking your browser')))){var c=source.get('cf_count')||'0';c=parseInt(c)+1;source.put('cf_count',c);if(c<=3){for(var i=0;i<2;i++){try{var h=java.webView(r,r,'setTimeout(function(){window.legado.getHTML(document.documentElement.outerHTML);},5000);');if(h&&!h.includes('Just a moment')&&200===java.connect(r).code()){source.put('cf_count','0');return a}}catch(e){}}}java.toast('需要CloudFlare验证');java.startBrowserAwait(r,'验证');source.put('cf_count','0');return java.connect(r)}return a})(result)",
+  "searchUrl": "/search?q={{key}}",
+  "ruleSearch": {
+    "bookList": ".book-item",
+    "name": ".title@text",
+    "bookUrl": "a@href"
+  }
+}
 ```
 
-**示例1 - Cloudflare验证**：
-```javascript
-// 检测条件：(403===t||503===t||502===t||200===t&&(o.includes('Just a moment')||o.includes('Checking your browser')))
-// 验证关键词：'Just a moment'
-```
+**使用场景对照表**：
 
-**示例2 - 自定义验证（加载中/userverify）**：
-```javascript
-// 检测条件：(200===t&&(o.includes('加载中')||o.includes('userverify')))
-// 验证关键词：'加载中'、'userverify'
-```
+| 场景 | 是否需要loginCheckJs |
+|------|---------------------|
+| 网站返回403/503错误 | ✅ 需要 |
+| 页面显示"Just a moment" | ✅ 需要 |
+| 页面显示"Checking your browser" | ✅ 需要 |
+| 正常网站 | ❌ 不需要 |
+| 需要登录的网站 | ❌ 使用loginUrl字段 |
 
-**使用流程**：
-```
-1. 分析网站验证机制 → 确定状态码和页面特征关键词
-    ↓
-2. 修改检测条件 → 替换模板中的【检测条件】
-    ↓
-3. 修改验证关键词 → 替换模板中的【验证关键词】
-    ↓
-4. 测试验证 → 确保正常工作
-```
+
 
 ### 知识吸收检查清单
 
