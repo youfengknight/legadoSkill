@@ -109,6 +109,22 @@ Legado 书源开发专家。当用户需要创建、调试、修复或学习 Leg
 
 ## 核心工具代码
 
+### 调试器工具（debugger/）
+
+Legado 书源调试器，提供完整的测试和验证功能：
+
+| 文件路径 | 功能说明 | 主要用途 |
+| -------- | -------- | -------- |
+| `debugger/test_universal.py` | 通用测试脚本 | 完整流程测试、自动修复 |
+| `debugger/engine/debug_engine.py` | 核心调试引擎 | 搜索/详情/目录/正文测试 |
+| `debugger/engine/book_source.py` | 书源模型定义 | 书源数据结构 |
+| `debugger/engine/analyze_rule.py` | 规则分析器 | CSS选择器/XPath/JSONPath解析 |
+| `debugger/engine/auto_fixer.py` | 自动修复器 | 智能修复书源问题 |
+| `debugger/engine/file_organizer.py` | 文件整理器 | 整理书源相关文件 |
+| `debugger/engine/web_book.py` | 网络书籍接口 | 模拟Legado网络请求 |
+
+### 辅助工具（scripts/）
+
 核心工具代码已迁移到 `scripts/` 目录，按需加载使用：
 
 | 脚本文件                              | 功能说明    |
