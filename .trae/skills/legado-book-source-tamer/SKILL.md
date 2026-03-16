@@ -1,3 +1,8 @@
+---
+name: legado-book-source-tamer
+description: Legado 书源开发专家。当用户需要创建、调试、修复或学习 Legado 阅读 APP 书源时，必须使用此技能。
+---
+
 ***
 
 name: "legado-book-source-tamer"
@@ -126,6 +131,27 @@ Legado 书源开发专家。当用户需要创建、调试、修复或学习 Leg
 
 ***
 
+## 搜索接口发现
+
+创建书源时，搜索接口的发现是第一步关键工作。
+
+**详细流程请参考**：[references/api-discovery-guide.md](references/api-discovery-guide.md)
+
+### 简要流程
+
+1. **第一步**：分析搜索表单（form 标签、input 标签、常见字段名）
+2. **第二步**：分析 JavaScript 代码（先内联 JS，后外部 JS）
+3. **第三步**：猜测测试常见格式（PC 端和移动端）
+4. **第四步**：参考实战案例（3-5 次失败后）
+
+### 常见搜索字段名
+
+```
+['q', 'wd', 'query', 'search', 'key', 'keyword', 'value', 'searchkey', 's', 'word']
+```
+
+***
+
 ## 工作模式
 
 ### 模式 1：知识对话
@@ -139,10 +165,11 @@ Legado 书源开发专家。当用户需要创建、调试、修复或学习 Leg
 **第一阶段（收集）**：
 
 1. 查询知识库
-2. 检测网站编码
-3. 获取真实 HTML
-4. 分析 HTML 结构
-5. 记录信息（禁止创建书源！）
+2. **发现搜索接口**（按上述流程）
+3. 检测网站编码
+4. 获取真实 HTML
+5. 分析 HTML 结构
+6. 记录信息（禁止创建书源！）
 
 **第二阶段（审查）**：
 
