@@ -10,7 +10,7 @@
    ```json
    // 错误示例 - 缺少 POST 配置
    "searchUrl": "/api/search"
-   
+
    // 正确示例 - 包含完整配置
    "searchUrl": "/api/search,{\"method\":\"POST\",\"body\":\"q={{key}}\"}"
    ```
@@ -293,11 +293,9 @@
 ### Q: 书源在哪里下载？
 
 **书源获取途径**：
-- 官方论坛：https://github.com/gedoor/legado/discussions
-- 书源社区：https://www.yuque.com/legado
 - 自行制作（推荐学习本 Skill）
 
----
+***
 
 ## 需要帮助？
 
@@ -315,5 +313,6 @@
    - 已尝试的解决方法
 
 3. **查看 Legado 官方文档**：
-   - GitHub: https://github.com/gedoor/legado
-   - 语雀文档：https://www.yuque.com/legado
+   - GitHub: <https://github.com/gedoor/legado>
+   - 语雀文档：<https://www.yuque.com/legado>
+
