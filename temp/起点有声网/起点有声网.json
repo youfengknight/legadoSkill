@@ -34,12 +34,12 @@
     "lastChapter": "class.playlist@tag.li.0@tag.a@text"
   },
   "ruleToc": {
-    "chapterList": "class.playlist@tag.li",
-    "chapterName": "tag.a@text",
-    "chapterUrl": "tag.a@href"
+    "chapterList": "@css:#playlist li",
+    "chapterName": "a@text",
+    "chapterUrl": "a@href"
   },
   "ruleContent": {
-    "content": "@js:\n// 从章节URL中提取小说ID和章节ID\nlet url = baseUrl;\nlet match = url.match(/tingshu\\/(\\d+)\\/(\\d+)\\.html/);\nif (!match) {\n    return '';\n}\nlet nid = match[1];\nlet cid = match[2];\n\n// 构造播放器URL并访问\nlet playerUrl = 'https://www.qdysw.com/player.html?nid=' + nid + '&cid=' + cid + '&site=16';\nlet playerHtml = java.ajax(playerUrl);\n\n// 从播放器页面提取音频地址\nlet audioMatch = playerHtml.match(/mp3:'(https?:\\/\\/[^']+\\.mp3)'/);\nif (audioMatch && audioMatch[1]) {\n    return audioMatch[1];\n}\nreturn '';",
+    "content": "@js:\nlet url = baseUrl;\nlet m = url.match(/tingshu\\/(\\d+)\\/(\\d+)\\.html/);\nif(!m) return '';\nlet html = java.ajax('https://www.qdysw.com/player.html?nid=' + m[1] + '&cid=' + m[2] + '&site=16');\nlet u = html.match(/url\\d+\\s*=\\s*'(https?:\\/\\/[^']+)'/);\nlet ext = html.match(/murl\\d+\\s*=\\s*'([^']+)'/);\nif(u && ext) return u[1] + ext[1];\nreturn '';",
     "sourceRegex": ".*\\.mp3.*"
   }
 }
