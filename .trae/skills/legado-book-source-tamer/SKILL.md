@@ -1,360 +1,329 @@
 ---
 name: legado-book-source-tamer
-description: Legado 书源开发专家。当用户需要创建、调试、修复或学习 Legado 阅读 APP 书源时，必须使用此技能。
-----------------------------------------------------------------------
+description: 用于创建、修复、调试、讲解 Legado 阅读书源。涉及书源规则、站点分析、搜索/详情/目录/正文规则时必须使用。
+---
 
+# Legado 书源开发技能
 
-适用场景：
+## 技能定位
 
-- 为小说/漫画/听书网站创建书源（搜索、发现、详情、目录、正文规则）
-- 调试书源问题（搜索失败、正文乱码、目录缺失、章节无法打开）
-- 学习书源开发（规则语法、选择器写法、API 分析、加密参数处理）
-- 优化现有书源（性能提升、反爬处理、编码修复、规则精简）
-- 分析网站结构（HTML 解析、API 接口、JSON 数据、Ajax 请求）
+本技能用于处理所有 Legado 阅读书源相关任务，包括：
 
-触发关键词：书源、Legado、阅读 APP、小说网站、搜索规则、发现规则、正文规则、目录规则、书源调试、书源制作
+- 创建新书源
+- 修复已有书源
+- 分析站点结构与接口
+- 解释书源规则语法
 
-## 注意：如果用户只是询问小说推荐、Legado 下载等简单问题，可以直接回答；但一旦涉及书源相关内容，必须使用此技能。
+一旦任务涉及以下内容，必须使用本技能：
 
+- 搜索规则
+- 详情规则
+- 目录规则
+- 正文规则
+- 发现规则
+- API 分析
+- 反爬处理
 
-## 核心原则（最重要！必须遵守！）
+最终目标是输出以下结果之一：
 
-### 模拟调试不一定准确，一切以官方仓库代码为主！
+- 可导入 Legado 的书源 JSON
+- 修复后的书源 JSON
+- 明确的问题分析和待验证项
 
-1. **模拟调试引擎只是近似实现** - Python 模拟引擎无法 100% 还原 Legado 的真实行为
-2. **官方源码是唯一权威** - `legado/` 目录下的 Kotlin 源代码才是真正的规则定义
-3. **模拟失败时直接阅读源码** - 不要依赖模拟结果，要阅读 Legado 源码确认
-4. **真实测试才是最终验证** - 生成的书源必须在 Legado APP 中实际测试
+## 适用范围
 
-### Legado 源码关键文件位置
+适用于以下任务：
 
-| 功能      | 源码位置                                                                 |
-| ------- | -------------------------------------------------------------------- |
-| CSS 选择器 | `legado/app/src/main/java/io/legado/app/model/analyzeRule/`          |
-| 书源规则    | `legado/app/src/main/java/io/legado/app/data/entities/BookSource.kt` |
-| 搜索规则    | `legado/app/src/main/java/io/legado/app/model/SearchBook.kt`         |
+- 为小说、漫画、听书、订阅网站创建书源
+- 修复搜索失败、正文乱码、目录缺失、章节打不开等问题
+- 分析 HTML、JSON API、Ajax、加密参数、验证码、Cloudflare
+- 讲解 CSS 选择器、JSONPath、XPath、JavaScript 在书源中的写法
 
-## 详细参考文档
+常见触发词包括：
 
-以下文档包含详细说明，需要时请阅读：
+- 书源
+- Legado
+- 阅读 APP
+- 搜索规则
+- 目录规则
+- 正文规则
+- 发现规则
+- 修复书源
+- 调试书源
 
-**新手必读**：
+## 非适用范围
 
-| 文档                                       | 说明          |
-| ---------------------------------------- | ----------- |
-| [QUICKSTART.md](../QUICKSTART.md)        | **快速入门指南**  |
-| [FAQ.md](../FAQ.md)                      | **常见问题解答**  |
-| [examples/README.md](examples/README.md) | **实战案例库索引** |
+以下情况不必进入完整书源工作流：
 
-**核心教程**：
+- 单纯小说推荐
+- Legado 下载地址
+- Legado 安装教程
+- 与书源制作无关的普通技术问题
 
-| 文档                                                           | 说明                   |
-| ------------------------------------------------------------ | -------------------- |
-| [references/书源规则：从入门到入土.md](references/书源规则：从入门到入土.md)       | **完整书源规则教程**（从入门到精通） |
-| [references/订阅源规则：从入门到再入门.md](references/订阅源规则：从入门到再入门.md)   | 订阅源规则完整教程            |
-| [references/workflow-guide.md](references/workflow-guide.md) | 完整工作流程指南             |
-
-**规则语法**：
-
-| 文档                                                                           | 说明                         |
-| ---------------------------------------------------------------------------- | -------------------------- |
-| [references/css 选择器规则.md](references/css选择器规则.md)                            | **CSS 选择器完整参考**（78KB 详细教程） |
-| [references/css-selector-reference.md](references/css-selector-reference.md) | CSS 选择器规则速查                |
-| [references/regex-guide.md](references/regex-guide.md)                       | 正则表达式使用规范                  |
-| [references/json-structure.md](references/json-structure.md)                 | 书源 JSON 结构                 |
-
-**开发指南**：
-
-| 文档                                                               | 说明                  |
-| ---------------------------------------------------------------- | ------------------- |
-| [references/javascript-guide.md](references/javascript-guide.md) | JavaScript 开发完整指南   |
-| [references/方法-JS 扩展类.md](references/方法-JS扩展类.md)                | JS 扩展类方法参考          |
-| [references/方法 - 加密解密.md](references/方法-加密解密.md)                 | 加密解密方法参考            |
-| [references/方法 - 登录检查 JS.md](references/方法-登录检查JS.md)            | 登录检查 JS 方法参考        |
-| [references/阅读 lyc 版 js 变量和函数.md](references/阅读lyc版js变量和函数.md)   | Legado JS 变量和函数完整列表 |
-
-**实战技术**：
-
-| 文档                                                                             | 说明                      |
-| ------------------------------------------------------------------------------ | ----------------------- |
-| [references/api-discovery-guide.md](references/api-discovery-guide.md)         | API 发现核心技巧              |
-| [references/post-request-guide.md](references/post-request-guide.md)           | POST 请求配置规范             |
-| [references/动态加载.md](references/动态加载.md)                                       | 动态加载（WebView）处理方法       |
-| [references/captcha-detection-guide.md](references/captcha-detection-guide.md) | 验证码检测与处理指南              |
-| [references/webview-limitations.md](references/webview-limitations.md)         | WebView 的 JavaScript 限制 |
-| [references/快速写源订阅源原理分析.md](references/快速写源订阅源原理分析.md)                         | 快速写源订阅源原理分析             |
-
-**参考资料**：
-
-| 文档                                                                             | 说明        |
-| ------------------------------------------------------------------------------ | --------- |
-| [references/book-source-templates.md](references/book-source-templates.md)     | 书源模板参考    |
-| [references/html-structure-examples.md](references/html-structure-examples.md) | HTML 结构示例 |
-| [references/encoding-guide.md](references/encoding-guide.md)                   | 网站编码处理指南  |
-| [references/output-template.md](references/output-template.md)                 | 书源输出模板    |
-| [references/订阅源规则帮助.md](references/订阅源规则帮助.md)                                 | 订阅源规则快速参考 |
-
-***
-
-## 核心工具代码
-
-### 调试器工具（debugger/）
-
-Legado 书源调试器，提供完整的测试和验证功能：
-
-| 文件路径                                | 功能说明   | 主要用途                    |
-| ----------------------------------- | ------ | ----------------------- |
-| `debugger/test_universal.py`        | 通用测试脚本 | 完整流程测试、自动修复             |
-| `debugger/engine/debug_engine.py`   | 核心调试引擎 | 搜索/详情/目录/正文测试           |
-| `debugger/engine/book_source.py`    | 书源模型定义 | 书源数据结构                  |
-| `debugger/engine/analyze_rule.py`   | 规则分析器  | CSS选择器/XPath/JSONPath解析 |
-| `debugger/engine/auto_fixer.py`     | 自动修复器  | 智能修复书源问题                |
-| `debugger/engine/file_organizer.py` | 文件整理器  | 整理书源相关文件                |
-| `debugger/engine/web_book.py`       | 网络书籍接口 | 模拟Legado网络请求            |
-
-### 辅助工具（scripts/）
-
-核心工具代码已迁移到 `scripts/` 目录，按需加载使用：
-
-| 脚本文件                              | 功能说明    |
-| --------------------------------- | ------- |
-| `scripts/batch_fetcher.py`         | 批量并行抓取器 ⭐ 同时抓取多个页面分析 |
-| `scripts/file_organizer.py`       | 文件整理工具  |
-| `scripts/smart_request.py`        | 智能请求工具  |
-| `scripts/rule_validator.py`       | 规则验证器   |
-| `scripts/multi_mode_extractor.py` | 多模式提取器  |
-| `scripts/knowledge_tools.py`      | 知识库工具   |
-| `scripts/smart_web_analyzer.py`   | 智能网站分析器 |
-
-***
-
-
-## 核心约束（必须严格遵守）
-
-### 禁止使用的字段和选择器
-
-1. **禁止使用** **`prevContentUrl`** **字段** - Legado 正文中只有 `nextContentUrl`
-2. **禁止使用** **`:contains()`** **伪类选择器** - 应使用 `text.文本` 格式
-3. **禁止使用** **`:first-child/:last-child`** **伪类选择器** - 应使用数字索引（如 `.0`, `.-1`）
-4. **只要有分页按钮就必须设置** **`nextContentUrl`**
-
-### 禁止使用的正则表达式写法
-
-**错误写法（会导致书源无法导入）**：
-
-```
-##\\[|\\]##
-##\$$|\$$##
-##\$$|\$$##
-
-```
-
-**原因**：在 Legado 书源 JSON 中，正则表达式中的 `\` 不需要额外转义。`\\[` 会被解析为字面量 `\[`，导致正则匹配失败。
-
-**正确写法**：
-
-```
-##\[|\]##
-```
-
-**示例**：
-
-- ❌ 错误：`span.s1@text##\\[|\\]##` - 无法导入书源
-- ✅ 正确：`span.s1@text##\[|\]##` - 正常工作
-
-**效果**：将 `[玄幻魔法]` 清理为 `玄幻魔法`
-
-### 正则替换格式速查
-
-| 格式 | 示例 | 结果说明 |
-|------|------|----------|
-| `##正则` | `##文字` | 删除匹配内容 |
-| `##正则##替换` | `##文字##替换` | 替换匹配内容，返回整个字符串 |
-| `##正则##替换###` | `##文字##替换###` | **只返回替换后的内容**，匹配失败返回空 |
-
-**示例对比**：
-```
-原文："这是一段文字"
-
-##文字##替换      → "这是一段替换"（整个字符串）
-##文字##替换###   → "替换"（只返回替换内容）
-##没有##替换###   → ""（空字符串，匹配失败）
-```
-
-***
-
-## 搜索接口发现
-
-创建书源时，搜索接口的发现是第一步关键工作。
-
-**详细流程请参考**：[references/api-discovery-guide.md](references/api-discovery-guide.md)
-
-### 简要流程
-
-1. **第一步**：分析搜索表单（form 标签、input 标签、常见字段名）
-2. **第二步**：分析 JavaScript 代码（先内联 JS，后外部 JS）
-3. **第三步**：猜测测试常见格式（PC 端和移动端）
-4. **第四步**：参考实战案例（3-5 次失败后）
-
-### 常见搜索字段名
-
-```
-['searchkey', 'q', 'wd', 'query', 'search', 'key', 'keyword', 'value', 's', 'word']
-```
-
-**优先尝试顺序**：`searchkey` → `q` → `wd` → `keyword` → `search`
-
-### 编码检测技巧
-
-1. **查看 HTML meta 标签**：`<meta charset="UTF-8">` 或 `<meta charset="GBK">`
-2. **查看 Content-Type 响应头**：`charset=gbk`
-3. **笔趣阁类网站默认 GBK**：这类网站大多使用 GBK 编码
-4. **测试方法**：用中文关键词搜索，如果返回乱码或无结果，尝试切换编码
-
-***
+如果只是简单问答，可以直接回答；但一旦涉及书源规则或站点分析，必须切换到本技能。
 
 ## 工作模式
 
-### 模式 1：知识对话
+### 模式 1：知识问答
 
-用户问知识问题 → 查知识库 → 回答 → 不创建书源
+适用于：
 
-### 模式 2：完整生成模式
+- 解释规则语法
+- 对比不同写法
+- 给出示例
 
-用户要求创建书源时，执行以下流程：
+要求：
 
-**第一阶段（收集）**：
+- 解释清楚概念和用法
+- 可引用参考文档
+- 不创建书源 JSON
 
-1. 查询知识库
-2. **识别网站类型**（优先判断是否笔趣阁类）
-3. 使用批量并行抓取器 batch_fetcher.py 进行并行请求
-4. 按页面类型顺序分析搜索页、发现页、详情页、目录页、正文页
-5. 检测网站编码（默认 GBK）
+### 模式 2：书源修复
 
-**第二阶段（审查）**：
+适用于：
 
-1. 汇总页面分析结果
-2. 检查是否有失败项，按容错机制处理
-3. 验证语法正确性
-4. 处理特殊情况
-5. 利用调试器工具测试书源是否跑通
+- 用户提供现成书源 JSON
+- 用户描述已有书源的故障现象
 
-**第三阶段（创建）**：
+要求：
 
-1. 准备完整 JSON
-2. 输出 JSON 给用户
-3. 保存到 `temp/书源名称/` 目录
-4. 调用 `scripts/upload_book_source.py` 上传书源，将获得的直链提供给用户
+- 先识别问题点
+- 再输出修复建议
+- 必要时输出修复后的完整 JSON
 
-### 效率优化要点
+### 模式 3：新建书源
 
-1. **先识别网站类型**：看到 URL 或网站名，立即判断是否属于已知类型
-2. **优先分析 JS 代码**：比盲目尝试 URL 格式快得多
-3. **批量请求**：需要测试多个接口时，并行发送请求
+适用于：
 
-***
+- 用户给出站点 URL，希望从零创建书源
 
-## 发现规则编写规范（如果用户需要）
+要求：
 
-### 核心原则
+- 分析站点结构
+- 判断请求方式和页面类型
+- 生成对应规则
+- 输出完整 JSON 或明确的部分可用结果
 
-**URL 格式必须与网站导航菜单中的实际链接格式完全一致**，不能凭经验臆造！
+## 标准主流程
 
-### 编写步骤
+### 第一步：任务分类
 
-1. 获取网站首页 HTML，找到导航菜单中的分类链接
-2. 分析 URL 格式规律
-3. 用 `{{page}}` 替换页码数字
+先判断任务属于哪一类：
 
-### 基本格式
+- 知识问答 / 书源修复 / 新建书源
+- 只做搜索 / 搜索+详情 / 完整源
+- HTML 页面 / JSON API / Ajax 动态加载
+- 优先 PC 站 / 优先移动站
 
-```json
-{
-  "exploreUrl": "分类名::/实际/URL/格式_{{page}}/\n分类 2::/url2_{{page}}.html",
-  "ruleExplore": {
-    "bookList": ".book-item",
-    "name": ".title@text",
-    "bookUrl": "a@href"
-  }
-}
-```
+### 第二步：信息收集
 
-***
+收集或确认以下信息：
 
-## 书源字段规范
+- 站点 URL
+- 搜索页或搜索接口
+- 详情页 URL
+- 目录页 URL
+- 正文页 URL
+- 请求方式：GET 或 POST
+- 页面编码：UTF-8 / GBK / 其他
+- 是否存在登录、验证码、Cloudflare、加密参数
 
-### concurrentRate（并发率）
+如果信息不足，不要直接臆造规则，先补齐关键输入。
 
-- **正确写法**：空字符串 `"concurrentRate": ""`，表示不限制并发率
-- **错误写法**：`"concurrentRate": "0"` - 0 可能导致意外行为
-- **其他值**：具体数字如 `"700"` 表示每秒请求次数
+### 第三步：规则分析
 
-### 文件保存位置
+根据真实页面结构或用户提供内容，分析以下字段：
 
-- **正确位置**：`temp/书源名称/` 目录
-- **注意**：不要放在项目根目录，必须放在 temp 文件夹下
+- `searchUrl`
+- `ruleSearch`
+- `ruleBookInfo`
+- `ruleToc`
+- `ruleContent`
+- `exploreUrl`
+- `ruleExplore`
 
-### 搜索建议
+如果只做搜索源，只需要分析与搜索相关的必需字段。
 
-- **搜索关键词长度**：默认搜索三个字及以上的书籍名字，比如斗罗大陆、斗破苍穹、末世之。尽可能不搜索两个字，比如我的、系统等等。
+### 第四步：规则产出
 
-### 代码注释规范
+将分析结果整理成完整 JSON。
 
-- **JavaScript 注释要求**：在编写书源时，复杂的 JavaScript 代码必须写上注释表明作用。
+至少保证：
 
-***
+- 基本字段完整
+- 规则结构合法
+- 命名清晰
+- 风险说明明确
 
-## 自动进化规则
+### 第五步：结果校验
 
-**当用户提供新知识、纠正错误、分享经验时，必须自动吸收并转化为技能包内容。**
+输出前必须检查：
 
-### 自动进化流程
+- JSON 结构是否正确
+- 必填字段是否齐全
+- 规则写法是否兼容 Legado
+- 是否存在明显的站点依赖风险
+- 是否需要用户在 Legado 中进一步实测
 
-```
-用户提供知识 → 验证知识正确性  → 添加到技能包对应章节
-```
+## 输入契约
 
-### 知识吸收检查清单
+### 最少输入
 
-- [ ] **验证知识正确性** - 是否符合 Legado 官方规范？
-- [ ] **确定知识类型** - 是新知识、修正错误、还是实战经验？
-- [ ] **找到对应章节** - 应该添加到 SKILL.md 的哪个位置？
+用户至少应提供以下信息之一：
 
-***
+1. 目标站点 URL
+2. 任务类型：新建或修复
+3. 目标范围：只搜索 / 搜索+详情 / 完整源
 
-## 总结
+### 推荐输入
 
-### 必须遵守
+若用户能补充以下内容，成功率会更高：
 
-**知识对话模式**：
+- 搜索关键词样例
+- 搜索结果页 URL
+- 书籍详情页 URL
+- 目录页 URL
+- 正文页 URL
+- 现成书源 JSON
+- 报错信息或现象描述
+- 是否优先手机站或 PC 站
 
-1. 调用 search\_knowledge 查询知识库
-2. 基于查询结果回答问题
-3. 不调用 edit\_book\_source
+### 信息不足时的处理原则
 
-**完整生成模式**：
+如果缺少核心输入：
 
-1. 调用 search\_knowledge 查询知识库（第一步）
-2. **识别网站类型**（第二步，关键优化！）
-3. 使用 batch_fetcher.py 并行抓取页面（第三步）
-4. 按页面类型顺序完成规则分析
-5. 汇总结果，处理失败项
-6. 验证语法正确性
-7. 生成完整书源 JSON
-8. 保存到 `temp/书源名称/` 目录
-9. 调用 `scripts/upload_book_source.py` 上传书源，将直链提供给用户
+- 先索要最小补充信息
+- 不凭经验臆造完整规则
+- 不把猜测写成确定规则
 
-### 绝对禁止
+## 输出契约
 
-1. 知识对话模式：调用 edit\_book\_source
-2. 前两个阶段调用 edit\_book\_source
-3. 不调用 search\_knowledge 查询知识库就编写规则
-4. 不获取真实 HTML 就编写规则
-5. 不保存 JSON 文件到项目根目录
-6. **盲目尝试 URL 格式**（应先识别网站类型或分析 JS）
+输出必须尽量包含以下内容：
 
-**核心原则**：知识库是权威 → 必须访问真实网页 → 必须基于真实 HTML 编写规则
+1. 完整书源 JSON 或修复后的 JSON
+2. 保存路径，例如 `temp/站点名/站点名.json`
+3. 本次已完成功能说明
+4. 本次未完成或未验证项
+5. 风险和限制说明
+6. 建议用户在 Legado 中实测的步骤
 
-**效率原则**：识别类型优先 → JS 分析次之 → 盲目尝试最后
+如果当前只能交付部分结果，也必须明确说明：
 
-**并行原则**：抓取并行 → 分步分析 → 容错处理
+- 哪些部分可用
+- 哪些部分未确认
+- 后续还需要什么信息
+
+## 强约束
+
+以下规则必须遵守：
+
+1. 不允许编造站点规则，必须基于真实页面结构或用户提供内容分析。
+2. 模拟调试不等于真实行为，Legado 官方源码优先于模拟结果。
+3. 只要发现有分页按钮或下一页逻辑，就必须考虑 `nextContentUrl`。
+4. 禁止使用 `prevContentUrl`。
+5. 禁止使用 `:contains()` 作为 Legado 规则写法。
+6. 禁止使用 `:first-child`、`:last-child` 这类不兼容写法，应改用索引方式。
+7. 不要把可选增强能力当作默认必走流程。
+8. 复杂 JavaScript 必须附用途说明。
+9. 最终结果必须提醒用户在 Legado APP 中实测。
+
+## 可选增强能力
+
+以下能力属于可选增强，不是默认主流程：
+
+- 批量抓取多个页面
+- 使用调试器进一步验证
+- 对特殊反爬站点做专项处理
+- 上传书源并生成直链
+
+使用原则：
+
+- 仅当环境支持时使用
+- 仅当任务复杂且确有必要时使用
+- 不要因为存在增强能力，就强行改变主流程
+
+## 失败与降级策略
+
+### 可降级交付的情况
+
+- 搜索规则可确认，但详情规则未确认：允许只交付搜索源
+- 搜索、详情、目录可确认，但正文规则不稳定：允许交付部分可用源，并标注风险
+- 发现规则无法稳定确认：允许暂不提供 `exploreUrl`
+
+### 必须中止完整交付的情况
+
+- 站点需要登录且当前无法验证
+- 存在验证码或 Cloudflare，但当前条件不足以完成验证
+- 页面结构未获取到，核心规则只能靠猜测
+
+这时应改为输出：
+
+- 已分析出的结论
+- 当前阻塞点
+- 需要用户补充的最小信息
+
+### 信息不足时的默认策略
+
+如果用户只给出模糊需求，例如“做个书源”：
+
+- 先补齐站点 URL 和目标范围
+- 不直接生成完整书源
+
+## 参考文档导航
+
+### 入门
+
+- [QUICKSTART.md](QUICKSTART.md)
+- [FAQ.md](FAQ.md)
+
+### 主流程
+
+- [references/workflow-guide.md](references/workflow-guide.md)
+- [references/skill-tips-guide.md](references/skill-tips-guide.md)
+
+### 规则语法
+
+- [references/css-selector-reference.md](references/css-selector-reference.md)
+- [references/css选择器规则.md](references/css选择器规则.md)
+- [references/regex-guide.md](references/regex-guide.md)
+- [references/json-structure.md](references/json-structure.md)
+- [references/javascript-guide.md](references/javascript-guide.md)
+
+### 特殊场景
+
+- [references/api-discovery-guide.md](references/api-discovery-guide.md)
+- [references/post-request-guide.md](references/post-request-guide.md)
+- [references/encoding-guide.md](references/encoding-guide.md)
+- [references/动态加载.md](references/动态加载.md)
+- [references/captcha-detection-guide.md](references/captcha-detection-guide.md)
+- [references/webview-limitations.md](references/webview-limitations.md)
+- [references/方法-登录检查JS.md](references/方法-登录检查JS.md)
+- [references/方法-JS扩展类.md](references/方法-JS扩展类.md)
+- [references/方法-加密解密.md](references/方法-加密解密.md)
+
+### 参考资料
+
+- [references/book-source-templates.md](references/book-source-templates.md)
+- [references/html-structure-examples.md](references/html-structure-examples.md)
+- [references/output-template.md](references/output-template.md)
+- [references/书源规则：从入门到入土.md](references/书源规则：从入门到入土.md)
+- [references/订阅源规则：从入门到再入门.md](references/订阅源规则：从入门到再入门.md)
+- [references/订阅源规则帮助.md](references/订阅源规则帮助.md)
+- [references/快速写源订阅源原理分析.md](references/快速写源订阅源原理分析.md)
+- [references/阅读lyc版js变量和函数.md](references/阅读lyc版js变量和函数.md)
+
+### 案例
+
+- [examples/README.md](examples/README.md)
+
+## 执行原则总结
+
+核心原则如下：
+
+- 先分类，再分析
+- 先收集信息，再写规则
+- 先保证可用，再考虑增强
+- 有风险就明确标注
+- 不确定就降级，不臆造
+
+本技能的重点不是“尽量多写内容”，而是“尽量稳定地产出可验证结果”。
