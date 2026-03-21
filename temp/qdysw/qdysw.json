@@ -61,7 +61,7 @@
         "pre序卷": ""
     },
     "ruleContent": {
-        "content": "<js>\nlet iframeSrc = result.match(/src=\"(\\/player\\.html\\?nid=\\d+&cid=\\d+[^\"]*)\"/);\nif(iframeSrc) {\n    let playerUrl = 'https://www.qdysw.com' + iframeSrc[1];\n    let playerHtml = java.ajax(playerUrl);\n    let audioUrl = playerHtml.match(/url\\d+\\s*=\\s*'([^']+)'/);\n    if(audioUrl) {\n        return audioUrl[1] + '.mp3';\n    }\n}\nreturn '';\n</js>",
+        "content": "<js>\nlet audioUrl = '';\nlet iframeSrc = result.match(/src=\"(\\/player\\.html\\?nid=\\d+&cid=\\d+[^\"]*)\"/);\nif(iframeSrc) {\n    let playerUrl = 'https://www.qdysw.com' + iframeSrc[1];\n    let playerHtml = java.ajax(playerUrl);\n    let m = playerHtml.match(/url\\d+\\s*=\\s*'([^']+)'/);\n    if(m) audioUrl = m[1] + '.mp3';\n}\naudioUrl;\n</js>",
         "nextContentUrl": "",
         "replaceRegex": "",
         "sourceRegex": "",
