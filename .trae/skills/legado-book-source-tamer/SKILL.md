@@ -1,11 +1,5 @@
 ---
 name: legado-book-source-tamer
-description: 当用户需要制作、创建、调试、修复或学习 Legado 阅读 APP 书源时，必须使用此技能
----
-
-***
-
-name: legado-book-source-tamer
 description: Legado 书源开发专家。当用户需要创建、调试、修复或学习 Legado 阅读 APP 书源时，必须使用此技能。
 ----------------------------------------------------------------------
 
