@@ -4,71 +4,33 @@
     "bookSourceUrl": "https://www.qdysw.com",
     "bookSourceType": 1,
     "bookSourceGroup": 4,
-    "bookSourceGrade": 2,
-    "customOrder": 0,
     "enabled": true,
     "enabledExplore": true,
-    "header": "",
-    "loginUrl": "",
     "bookUrlPattern": "https://www\\.qdysw\\.com/book/\\d+\\.html",
-    "exploreUrl": "",
-    "ruleExplore": {
-        "bookInfo": {
-            "author": "",
-            "coverUrl": "",
-            "intro": "",
-            "kind": "",
-            "lastChapter": "",
-            "name": "",
-            "wordCount": ""
-        },
-        "catalogNextUrl": "",
-        "chapterList": "",
-        "chapterName": "",
-        "chapterUrl": "",
-        "chapterUrlNext": "",
-        "content": "",
-        "description": "",
-        "kind": "",
-        "name": "",
-        "wordCount": ""
-    },
     "ruleSearch": {
         "author": "span.book-author a@text",
         "bookList": "ul.list-works li",
         "bookUrl": "dt.list-book-dt a@href",
         "coverUrl": "div.list-imgbox img@data-original",
         "intro": "dd.list-book-des@text",
-        "kind": "",
-        "name": "dt.list-book-dt a@text",
-        "wordCount": ""
+        "name": "dt.list-book-dt a@text"
     },
     "ruleBookInfo": {
-        "author": "<js>\nlet result = '';\nlet match = baseUrl.match(/book\\/(\\d+)\\.html/);\nif(match) {\n    let html = java.ajax(baseUrl);\n    let dd = html.match(/<dd[^>]*>\\s*<span>演播[\\s\\S]*?<\\/dd>/);\n    if(dd) {\n        let authors = dd[0].match(/<a[^>]*>([^<]*)<\\/a>/g);\n        if(authors) {\n            result = authors.map(a => a.replace(/<[^>]*>/g, '')).join('、');\n        }\n    }\n}\nresult;\n</js>",
+        "author": "<js>\nvar html = java.ajax(baseUrl);\nvar dd = html.match(/<dd[^>]*>\\s*<span>演播[\\s\\S]*?<\\/dd>/);\nvar result = '';\nif(dd) {\n    var authors = dd[0].match(/<a[^>]*>([^<]*)<\\/a>/g);\n    if(authors) {\n        result = authors.map(function(a) { return a.replace(/<[^>]*>/g, ''); }).join('、');\n    }\n}\nresult;\n</js>",
         "coverUrl": "div.book-img img@src",
         "intro": "div.book-des@text",
-        "kind": "div.book-info dl dd a@text@get:{0}",
-        "lastChapter": "div.playlist li a@text@get:{0}",
+        "kind": "div.book-info dl dd a@text",
+        "lastChapter": "div.playlist li a@text",
         "name": "h1.book-title@text",
-        "wordCount": "",
-        "tocUrl": ""
+        "tocUrl": "<js>\nvar html = java.ajax(baseUrl);\nvar dirUrl = html.match(/href=\"([^\"]*dirurl[^\"]*)\"/);\nif(dirUrl) {\n    var dirHtml = java.ajax('https://www.qdysw.com' + dirUrl[1]);\n    var bookdir = dirHtml.match(/location\\.href=\"([^\"]+)\"/);\n    if(bookdir) {\n        result = 'https://www.qdysw.com' + bookdir[1];\n    }\n}\nresult;\n</js>"
     },
     "ruleToc": {
-        "chapterList": "div.playlist li",
-        "chapterName": "a@text",
-        "chapterUrl": "a@href",
-        "chapterUrlNext": "",
-        "pre序卷": ""
+        "chapterList": "<js>\nvar list = [];\nvar html = java.ajax(baseUrl);\nvar links = html.match(/href='(\\/tingshu\\/\\d+\\/\\d+\\.html)'/g);\nif(links) {\n    for(var i = 0; i < links.length; i++) {\n        var url = links[i].match(/href='([^']+)'/);\n        var name = links[i].match(/>([^<]+)<\\/a>/);\n        if(url && name) {\n            list.push({name: name[1], url: 'https://www.qdysw.com' + url[1]});\n        }\n    }\n}\nJSON.stringify(list);\n</js>$.[*]",
+        "chapterName": "$.name",
+        "chapterUrl": "$.url"
     },
     "ruleContent": {
-        "content": "<js>\nlet audioUrl = '';\nlet iframeSrc = result.match(/src=\"(\\/player\\.html\\?nid=\\d+&cid=\\d+[^\"]*)\"/);\nif(iframeSrc) {\n    let playerUrl = 'https://www.qdysw.com' + iframeSrc[1];\n    let playerHtml = java.ajax(playerUrl);\n    let m = playerHtml.match(/url\\d+\\s*=\\s*'([^']+)'/);\n    if(m) audioUrl = m[1] + '.mp3';\n}\naudioUrl;\n</js>",
-        "nextContentUrl": "",
-        "replaceRegex": "",
-        "sourceRegex": "",
-        "webJs": ""
+        "content": "<js>\nvar audioUrl = '';\nvar iframeSrc = result.match(/src=\"(\\/player\\.html\\?nid=\\d+&cid=\\d+&site=\\d+)\"/);\nif(iframeSrc) {\n    var playerUrl = 'https://www.qdysw.com' + iframeSrc[1];\n    var playerHtml = java.ajax(playerUrl);\n    var m = playerHtml.match(/mp3:'(https?:\\/\\/[^']+)'/);\n    if(m) audioUrl = m[1] + '.mp3';\n}\naudioUrl;\n</js>"
     },
-    "searchUrl": "https://www.qdysw.com/search.html,{\"method\":\"POST\",\"body\":\"searchword={{key}}\"}",
-    "serviceUrl": "https://www.qdysw.com",
-    "style": {},
-    "weight": 0
+    "searchUrl": "https://www.qdysw.com/search.html,{\"method\":\"POST\",\"body\":\"searchword={{key}}\"}"
 }
